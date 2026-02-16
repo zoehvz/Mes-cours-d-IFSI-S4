@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Cours Infirmiers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-container p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .main-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #c0392b;
+        }
+
+        .category {
+            margin-bottom: 35px;
+        }
+
+        .category h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .category h2::before {
+            content: "📚";
+            margin-right: 10px;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .course-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .course-card:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .course-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .course-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .course-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+            padding: 8px 15px;
+            background: white;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .course-card a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .search-box {
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div class="login-container" id="loginContainer">
+        <h1>🩺 Mes Cours Infirmiers</h1>
+        <p>Accédez à vos cours en toute sécurité</p>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" placeholder="Entrez votre mot de passe" required>
+            </div>
+            <button type="submit" class="btn-login">Se connecter</button>
+            <p class="error-message" id="errorMessage">❌ Mot de passe incorrect</p>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <h1>📖 Mes Cours Infirmiers</h1>
+            <button class="btn-logout" onclick="logout()">Déconnexion</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un cours..." onkeyup="searchCourses()">
+        </div>
+
+        <div id="coursesContainer"></div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 🔐 MOT DE PASSE - Changez-le ici si besoin
+        // ============================================================
+        const MOT_DE_PASSE = "infirmiere2025";
+
+        // ============================================================
+        // 📚 LIENS DE VOS COURS (Mode Google Drive Viewer)
+        // ============================================================
+        const LIENS_COURS = {
+            // 🏥 PATHOLOGIES
+            "defaillances_digestives": "https://drive.google.com/file/d/1Ga5hZa17xW0GB0wJMkJkmLayg0QhRSsg/preview",
+            "insuffisance_cardiaque": "https://drive.google.com/file/d/1aPxUT5dNIzdF9hLSawYgSOC-fZIMOw8u/preview",
+            "deficiences_sensorielles": "https://drive.google.com/file/d/1b9lubJigPRYKa1zNbMhy9MvxJa_LS1ov/preview",
+            "neurologie": "https://drive.google.com/file/d/1oZcYZvsXAcKE6aN1s3uv-irL9gyjEe83/preview",
+            "geriatrie": "https://drive.google.com/file/d/1IrWsJ5VcMWWdHkAW_Sj4dPZ_TS_NDR7g/preview",
+            "rhumatismes": "https://drive.google.com/file/d/1CQ3tVSxV8wS5U4mXP2-UwlqepMpImjww/preview",
+            "nephro": "https://drive.google.com/file/d/1mHDJfvu98Tit6eKvzBFqzqItjtIaz7FF/preview",
+            "escarre": "https://drive.google.com/file/d/1yBw8JOcOLldFKEbB10-X82HXAaS-XGw2/preview",
+            "thyroidiennes": "https://drive.google.com/file/d/1kbLqaRVSKb-9P-HlCdWslZ99qd0XTlX5/preview",
+            "diabete": "https://drive.google.com/file/d/1jbNZM7t4dBJr5KvybVa-DKqaq8DVV0Hy/preview",
+            
+            // 🚨 URGENCES
+            "detresse_respiratoire": "https://drive.google.com/file/d/1LoISN_L1zGMa5_PaekH_IM6I7ChPhi_y/preview",
+            "defaillance_hemodynamique": "https://drive.google.com/file/d/1MdF-2pAtkCldpkOTxcDHLPBie7f01OM3/preview",
+            "detresse_neurologique": "https://drive.google.com/file/d/1-Hz531_D8r5Jswi0uvxY0l4ue0xh-wrN/preview",
+            "abcdef": "https://drive.google.com/file/d/1budbPP5g2I5mm-PyeqiVReLVgdGuJ1fL/preview",
+            "service_urgences": "https://drive.google.com/file/d/1R0hFdr-Zye-ek4-Dgd8Fc1fJULTLl-yK/preview",
+            
+            // 📋 UE & COMPÉTENCES
+            "ethique": "https://drive.google.com/file/d/1bAPeZ41FyOoeO-C2Tlej30RyeqrbI6Wa/preview",
+            "recherche": "https://drive.google.com/file/d/1pNBSIE2j2t1SCk6x4fu5YboY8Syujukt/preview",
+            "encadrement": "https://drive.google.com/file/d/1ua98mTOH4qIsNs0pbXyOlHK9_frO8oFy/preview",
+            "etp": "https://drive.google.com/file/d/1-j4CIOvfCHLuLpfTJJasoz4nbiI5roI8/preview",
+            "techniques": "https://drive.google.com/file/d/18Dv5zgCOddceeRT8H4WvqnLMrlLI5qdA/preview"
+        };
+
+        // Configuration des cours
+        const coursesData = [
+            {
+                category: "🏥 Pathologies",
+                courses: [
+                    {key: "defaillances_digestives", name: "Défaillances Digestives", desc: "Cours sur les pathologies digestives"},
+                    {key: "insuffisance_cardiaque", name: "Insuffisance Cardiaque", desc: "Pathologies cardiaques et prise en charge"},
+                    {key: "deficiences_sensorielles", name: "Déficiences Sensorielles", desc: "Troubles visuels et auditifs"},
+                    {key: "neurologie", name: "Neurologie - Parkinson, SEP, SLA", desc: "Pathologies neurologiques dégénératives"},
+                    {key: "geriatrie", name: "Gériatrie", desc: "Soins aux personnes âgées"},
+                    {key: "rhumatismes", name: "Rhumatismes", desc: "Pathologies rhumatologiques"},
+                    {key: "nephro", name: "Néphrologie", desc: "Pathologies rénales"},
+                    {key: "escarre", name: "L'Escarre", desc: "Prévention et traitement des escarres"},
+                    {key: "thyroidiennes", name: "Pathologies Thyroïdiennes", desc: "Troubles de la thyroïde"},
+                    {key: "diabete", name: "Diabète", desc: "Types de diabète et prise en charge"}
+                ]
+            },
+            {
+                category: "🚨 Urgences & Soins Critiques",
+                courses: [
+                    {key: "detresse_respiratoire", name: "Détresse Respiratoire Aiguë", desc: "Prise en charge des urgences respiratoires"},
+                    {key: "defaillance_hemodynamique", name: "Défaillance Hémodynamique", desc: "Choc et troubles circulatoires"},
+                    {key: "detresse_neurologique", name: "Détresse Neurologique", desc: "Urgences neurologiques"},
+                    {key: "abcdef", name: "Méthodologie ABCDEF", desc: "Approche systématique en soins d'urgence"},
+                    {key: "service_urgences", name: "Service des Urgences", desc: "Organisation et fonctionnement"}
+                ]
+            },
+            {
+                category: "📋 UE & Compétences Professionnelles",
+                courses: [
+                    {key: "ethique", name: "UE 1.3 - Éthique Soignante", desc: "Principes éthiques en soins infirmiers"},
+                    {key: "recherche", name: "UE 3.4 - Recherche & Lecture Critique", desc: "Méthodologie de recherche bibliographique"},
+                    {key: "encadrement", name: "UE 3.5 - Encadrement des Professionnels", desc: "Encadrement et management d'équipe"},
+                    {key: "etp", name: "UE 4.6 - ETP", desc: "Éducation Thérapeutique du Patient"},
+                    {key: "techniques", name: "UE 4.4 - Techniques Infirmières", desc: "SV, SNG, Transfusion et autres techniques"}
+                ]
+            }
+        ];
+
+        // Générer les cartes de cours
+        function generateCourses() {
+            const container = document.getElementById('coursesContainer');
+            container.innerHTML = '';
+
+            coursesData.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                
+                const categoryTitle = document.createElement('h2');
+                categoryTitle.textContent = category.category;
+                categoryDiv.appendChild(categoryTitle);
+
+                const grid = document.createElement('div');
+                grid.className = 'courses-grid';
+
+                category.courses.forEach(course => {
+                    const link = LIENS_COURS[course.key];
+                    const hasLink = link && link.trim() !== '';
+
+                    const card = document.createElement('div');
+                    card.className = 'course-card';
+                    card.setAttribute('data-name', course.name.toLowerCase());
+
+                    card.innerHTML = `
+                        <h3>${course.name}</h3>
+                        <p>${course.desc}</p>
+                        <a href="${link}" target="_blank">
+                            📄 Accéder au cours
+                        </a>
+                    `;
+
+                    grid.appendChild(card);
+                });
+
+                categoryDiv.appendChild(grid);
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        // Gestion de la connexion
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            if (password === MOT_DE_PASSE) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                sessionStorage.setItem('loggedIn', 'true');
+                generateCourses();
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Vérifier si déjà connecté
+        if (sessionStorage.getItem('loggedIn') === 'true') {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            generateCourses();
+        }
+
+        // Fonction de déconnexion
+        function logout() {
+            sessionStorage.removeItem('loggedIn');
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('password').value = '';
+        }
+
+        // Fonction de recherche
+        function searchCourses() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.course-card');
+            
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                if (name.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
